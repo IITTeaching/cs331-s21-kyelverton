@@ -69,7 +69,7 @@ def test2():
 # EXERCISE 3
 #################################################################################
 def integer_right_triangles(p):
-    a, b, count = 3, 5, 0
+    a, b, count = 3, 4, 0
     while a < p / 2:
         while b < p / 2 + a:
             if (a ** 2 + b ** 2) ** (1/2) + a + b == p:
