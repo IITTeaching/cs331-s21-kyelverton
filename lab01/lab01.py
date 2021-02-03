@@ -91,7 +91,6 @@ def test3():
 
 # implement this function
 def gen_pattern(chars):
-    def gen_pattern(chars):
     a = ''   
     l = len(chars)
     for x in range(l * 2 - 1):
