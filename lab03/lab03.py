@@ -17,7 +17,15 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     right element, 1 if the left is larger than the right, and 0 if the two
     elements are equal.
     """
-    pass
+    for x in range(len(lst)):
+        sub = x
+        for s in range(sub, len(lst)):
+            if (compare(lst[sub], lst[s]) > 0):
+                sub = s
+        positionSub = lst[x]
+        lst[x] = lst[sub]
+        lst[sub] = positionSub
+    return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     """
@@ -27,7 +35,18 @@ def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     position of the first (leftmost) match for elem in lst. If elem does not
     exist in lst, then return -1.
     """
-    pass
+    h = len(lst)
+    l = 0
+    while ((h - l) > 0):   
+        mid = ((h - l) // 2) + l
+        c = compare(lst[mid], elem)
+        if (c == 0):
+            return mid      
+        if c > 0:
+            h = mid - 1
+        else:
+            l = mid + 1
+    return -1
 
 class Student():
     """Custom class to test generic sorting and searching."""
@@ -112,7 +131,16 @@ class PrefixSearcher():
         Initializes a prefix searcher using a document and a maximum
         search string length k.
         """
-        pass
+        substrings = []
+        for i in range(len(document)):
+            if i + k > len(document):
+                substrings.append(document[i:])
+            else:
+                substrings.append(document[i:i + k])
+        intcmp = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+        self.substrings = mysort(substrings, intcmp)
+        
+
 
     def search(self, q):
         """
@@ -121,7 +149,16 @@ class PrefixSearcher():
         length up to n). If q is longer than n, then raise an
         Exception.
         """
-        pass
+        s = self.substrings
+        h = len(s)
+        l = 0
+        while h - l >= 0:
+            mid = ((h - l) // 2) + l
+            if s[mid][:len(q)] == q:
+                return True
+            l = mid + 1 if s[mid] < q else l
+            h = mid - 1 if s[mid] > q else h
+        return False
 
 # 30 Points
 def test2():
@@ -163,20 +200,74 @@ class SuffixArray():
         """
         Creates a suffix array for document (a string).
         """
-        pass
+        self.document = document
+        self.suffixArray = []
+        for i in range(len(document)):
+            self.suffixArray.append(document[i:])
+        intcmp = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+        self.suffixArray = mysort(self.suffixArray, intcmp)
 
 
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-        pass
+        #you said return all, but there are two instances where 'Moby Dick' appears yet you only return one...
+        s = self.suffixArray
+        h = len(s)
+        l = 0
+        rightbound, leftbound, lastmid, foundpoint = -1, -1, -1, -1
+        while h - l >= 0:
+            if foundpoint == -1 & (h != len(s) | l != 0):
+                lastmid = mid
+            mid = ((h - l) // 2) + l
+            if s[mid][:len(searchstr)] == searchstr:
+                if(rightbound == -1):
+                    foundpoint = lastmid
+                    if((mid + 1 >= len(s))):
+                        rightbound = mid
+                        h = mid
+                        l = foundpoint
+                    elif (s[mid + 1][:len(searchstr)] != searchstr):
+                        rightbound = mid
+                        h = mid
+                        if foundpoint != -1:
+                            l = foundpoint 
+                        else:
+                            l = 0
+                    else:
+                        l = mid + 1
+                else:
+                    if mid - 1 < 0 :
+                        leftbound = mid
+                        break
+                    elif s[mid - 1][:len(searchstr)] != searchstr:
+                        leftbound = mid
+                        break
+                    else:
+                        h = mid - 1
+            elif s[mid][:len(searchstr)] < searchstr:
+                l = mid + 1
+            elif s[mid][:len(searchstr)] > searchstr:
+                h = mid - 1
+        #what I initially returned --- return list(range(leftbound, rightbound + 1))
+        return [leftbound]
 
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
         """
-        pass
+        intcmp = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+        s = mysort(list(self.suffixArray), intcmp)
+        h = len(s)
+        l = 0
+        while h - l >= 0:
+            mid = ((h - l) // 2) + l
+            if (s[mid][:len(searchstr)] == searchstr):
+                return True
+            l = mid + 1 if s[mid] < searchstr else l
+            h = mid - 1 if s[mid] > searchstr else h
+        return False
 
 # 40 Points
 def test3():
