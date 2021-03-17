@@ -203,6 +203,7 @@ class LinkedList:
             for i in range(0, nidx):
                 n = n.next
             newn = self.Node(value, prior = n, next = n.next)
+            n.next.prior = newn
             n.next = newn
             
         ### END SOLUTION
