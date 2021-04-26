@@ -111,48 +111,35 @@ class HBStree:
         if self.__contains__(key):
             cur = self.root_versions[-1]
             self.root_versions.append(cur)
-            s = []
-            while cur.val != key:
-                s.insert(0, cur)
-                if key < cur.val:
+            c = []
+            while True:
+                if cur == None or key == cur.val:
+                    d = cur
+                    break
+                if cur.left != None and key < cur.val:
+                    c.append([cur, -1])
                     cur = cur.left
-                else:
+                if cur.right != None and key > cur.val:
+                    c.append([cur, 1])
                     cur = cur.right
-            c = cur
-            s2 = []
-            if (cur.right != None) & (cur.left != None):
-                if self.subtree_size(c.right) >= self.subtree_size(c.right):
-                    while c.right != None:
-                        s2.append(c)
-                        c = c.right
-                    for i in s2:
-                        c = self.INode(i.right.val, i.left, c.right)
+            a = []
+            if cur.left != None:
+                cur = cur.left
+                while cur.right != None:
+                    a.append(cur)
+                    cur = cur.right
+            f = None
+            if len(a) != 0:
+                for index in range(len(a) - 1, 0, -1):
+                    f = self.INode(a[index].val, a[index].left, f)
+                f = self.INode(node.val, d.left, f)
+            else:
+                f = d.right
+            for index in range(len(c) - 1 , -1, -1):
+                if c[index][1] == -1:
+                    f = self.INode(c[index][0].val, f, c[index][0].right)
                 else:
-                    while c.left != None:
-                        s2.append(c)
-                        c = c.left
-                    for i in s2:
-                        c = self.INode(i.left.val, c.left, i.right)     
-                f = c                  
-            else: 
-                if (cur.right == None) & (cur.left == None):
-                    if(len(s) == 0):
-                        f = self.INode(None, None, None)
-                    else:
-                        f = s.pop()
-                        if key < f.val:
-                            f = self.INode(f.val, None, f.right)
-                        else:
-                            f = self.INode(f.val, f.left, None)
-                elif cur.right == None:
-                    f = self.INode(c.left.val, c.left.left, c.left.right)
-                elif cur.left == None:
-                    f = self.INode(c.right.val, c.right.left, c.right.right)
-            for i in s:
-                if i.val < f.val:
-                    f = self.INode(i.val, i.left, f)
-                else:
-                    f = self.INode(i.val, f, i.right)
+                    f = self.INode(c[index][0].val, c[index][0].left, f)
             self.root_versions[-1] = f
         # END SOLUTION
 
