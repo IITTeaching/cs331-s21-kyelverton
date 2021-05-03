@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -31,16 +34,93 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
+        if height(t.left) > 1 + height(t.right):
+            if(height(t.left.right) > height(t.left.left)):
+               t.left.rotate_left()
+            t.rotate_right()
+        elif height(t.left) + 1 < height(t.right):
+            if(height(t.right.left) > height(t.right.right)):
+               t.right.rotate_right()
+            t.rotate_left()
         ### END SOLUTION
 
     def add(self, val):
         assert(val not in self)
         ### BEGIN SOLUTION
+        n = self.root
+        self.size += 1
+        c = []
+        if self.size == 1:
+            self.root = self.Node(val)
+        else:
+            while True:
+                c.append(n)
+                if val < n.val:
+                    if not n.left:
+                        n.left = self.Node(val)
+                        break
+                    n = n.left
+                elif val > n.val:
+                    if not n.right:
+                        n.right = self.Node(val)
+                        break
+                    n = n.right
+            
+            for i in range(len(c) - 1, -1, -1):
+                self.rebalance(c[i])
+            
         ### END SOLUTION
 
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
+        self.size += -1
+        c = []
+        n = self.root
+
+        if self.size == 0:
+            self.root = None
+        else:
+            while True:
+                c.append(n)
+                if n.val > val:
+                    n = n.left
+                elif n.val < val:
+                    n = n.right
+                else:
+                    if n.left and n.right:
+                        pr = n
+                        r = n.left
+                        while r.right:
+                            pr = r
+                            r = r.right
+                            c.append(pr)
+
+                        if pr == n:
+                            pr.left = r.left
+                        else:
+                            pr.right = r.left
+                        n.val = r.val
+                        break
+                    elif n.left:
+                        n.val = n.left.val
+                        n.right = n.left.right
+                        n.left = n.left.left
+                        break
+                    elif n.right:
+                        n.val = n.right.val
+                        n.left = n.right.left
+                        n.right = n.right.right
+                        break
+                    else:
+                        if len(c) > 1:
+                            if val <= c[-2].val:
+                                c[-2].left = None
+                            elif val > c[-2].val:
+                                c[-2].right = None
+                        break
+            for i in range(len(c) - 1, -1, -1):
+                self.rebalance(c[i])
         ### END SOLUTION
 
     def __contains__(self, val):
