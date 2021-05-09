@@ -113,9 +113,9 @@ def radix_floats(lst):
 
 print("Start")
 
-r = " ".join(radix_a_book())
-prev = r.split()[0]
-for i in r.split():
+r = radix_a_book()
+prev = r[0]
+for i in r:
     if i < prev:
         print(i)
     prev = i
@@ -123,9 +123,9 @@ for i in r.split():
 
 print("Least Significant Radix Sort of a Book Completed")
 
-r2 = " ".join(i.decode("utf-8") for i in LSD_radix_sort(book_to_words()))
-prev = r2.split()[0]
-for i in r2.split():
+r2 = [i.decode("utf-8") for i in LSD_radix_sort(book_to_words())]
+prev = r2[0]
+for i in r2:
     if i < prev:
         print(i)
     prev = i
