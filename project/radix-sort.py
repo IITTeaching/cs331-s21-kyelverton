@@ -147,4 +147,4 @@ for i in range(len(r3) - 1):
         print(r3[i])
 #float sort works, but rounding issues make my life annoying
 
-print("Most Significant Radix Sort of a List if Floats Completed")
+print("Most Significant Radix Sort of a List of Floats Completed")
