@@ -9,7 +9,7 @@ def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
 def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     """Will radix sort a book using the msd radix sort. Will return an ordered list of strings."""
     b = book_to_words(book_url)
-    return (i.decode("utf-8") for i in MSD_radix_sort(b))
+    return [i.decode("utf-8") for i in MSD_radix_sort(b)]
 
 def max_length(lst):
         m = len(lst[0])
